@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  selector:
+    matchLabels:
+      name: loki
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: loki
+    spec:
+      serviceAccountName: loki-crole
+      containers:
+      - name: loki-cont
+        image: grafana/loki:main
+        imagePullPolicy: Always
+        args: ['-config.file=/etc/loki/loki-config.yml','-log.level=debug']
+        ports:
+        - containerPort: 3100
+        # resources:
+        #   requests:
+        #     memory: "64Mi"
+        #     cpu: "10m"
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"
+        volumeMounts:
+        - name: loki-config
+          mountPath: /etc/loki/
+      volumes:
+      - name: loki-config 
+        configMap:
+          name: loki-config
+          

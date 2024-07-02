@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:main
+    restart: always
+    network_mode: "host"
+    ports:
+      - 9090:9090
+    volumes:
+    - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    - prometheus-storage:/prometheus
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    restart: always
+    network_mode: "host"
+    ports:
+      - 3000:3000
+    environment:
+      - GF_PATHS_CONFIG=/etc/grafana/grafana.ini
+    volumes:
+    - grafana-storage:/var/lib/grafana
+    - ./configs/grafana.ini:/etc/grafana/grafana.ini
+    - ~/.aws/credentials:/usr/share/grafana/.aws/credentials:ro
+volumes:
+  grafana-storage: {}
+  prometheus-storage: {}

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prometheus-server
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: prometheus-server
+  template:
+    metadata:
+      labels:
+        name: prometheus-server
+    spec:
+      # hostNetwork: true
+      serviceAccountName: prometheus-sa
+      initContainers:
+      - name: prometheus-data-permission-fix
+        image: busybox
+        command: ["/bin/chmod","-R","777", "/data"]
+        volumeMounts:
+        - name: prometheus-storages
+          mountPath: /data
+      containers:
+        - name: prometheus-server-cont
+          image: prom/prometheus:main
+          ports:
+          - containerPort: 9090
+          volumeMounts:
+          - name: prometheus-storages
+            mountPath: /prometheus
+          - name: prometheus-config-volume
+            mountPath: /etc/prometheus
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2048Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+
+      volumes:
+      - name: prometheus-config-volume
+        configMap:
+          name: prometheus-config
+
+  volumeClaimTemplates:
+  - metadata:
+      name: prometheus-storages
+    spec:
+      storageClassName: manual
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 8Gi
+  
