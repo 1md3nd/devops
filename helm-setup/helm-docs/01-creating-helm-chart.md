@@ -8,14 +8,14 @@
 helm create 3tier-helm-demo
 ```
 
-![alt text](/img-ref/image-5.png)
+![alt text](..../img-ref/image-5.png)
 
 ## Examine the chart's structure
 
 Now that you have created the chart, take a look at its structure to see what's inside.
-![alt text](/img-ref/image-6.png)
+![alt text](../img-ref/image-6.png)
 
-![alt text](/img-ref/image-helm-struct.png)
+![alt text](../img-ref/image-helm-struct.png)
 
 The first two files you see - `Chart.yaml` and `values.yaml` - define what the chart is and what values will be in it at deployment.
 
@@ -45,30 +45,30 @@ Template files are set up with formatting that collects deployment information f
 
 ## How helm works
 
-![alt text](/img-ref/image-helm-working.png)
+![alt text](../img-ref/image-helm-working.png)
 
 ## kubernetes vs helm
 
-![alt text](/img-ref/image-helm-comparision.png)
+![alt text](../img-ref/image-helm-comparision.png)
 
 ## Creating template for each deployment and services
 
 ### frontend-template
 
-![alt text](/img-ref/image-helm-frontend.png)
+![alt text](../img-ref/image-helm-frontend.png)
 
 How we have assigned the values for the frontend-deployment-template
-![alt text](/img-ref/image-helm-frontend-value.png)
+![alt text](../img-ref/image-helm-frontend-value.png)
 
 ### backend-template
 
 #### backend-deployment
 
-![alt text](/img-ref/image-helm-backend-deployment.png)
+![alt text](../img-ref/image-helm-backend-deployment.png)
 
 #### backend-service
 
-![alt text](/img-ref/image-helm-backend-service.png)
+![alt text](../img-ref/image-helm-backend-service.png)
 And here how I have associate the values of backend-deployment
 
-![alt text](/img-ref/image-helm-backend-values.png)
+![alt text](../img-ref/image-helm-backend-values.png)
