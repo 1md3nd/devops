@@ -1,0 +1,160 @@
+# Default values for 3tier-helm-demo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# here we use naming convention for the values.yaml file to make it easier to understand the values
+# it will be used in the templates for each resource for different kubernetes objects
+
+backend:
+  labelName: my-node-backend
+  # replicaCount if you want to scale the application
+  replicas: 2
+  # image repository and tag and pull policy for the application
+  imageName: "anmol040/node-backend"
+  tag: "1.4"
+  # pullPolicy defines the image pull policy Always, Latest or IfNotPresent.
+  imagePullPolicy: "Always"
+  containerPort: 5000
+
+  env:
+    - name: MONGO_URL
+      valueFrom:
+        secretKeyRef:
+          name: backend-secret
+          key: mongo-url
+
+  service:
+    name: my-node-backend-service
+    type: NodePort
+    nodePort: 30001
+
+  secret:
+    name: backend-secret
+    type: Opaque
+    mongo_url: bW9uZ29kYjovL3h5ejpSa2g2MGg5bVVZbzlOV0V4QGFjLXV1c3NuYjctc2hhcmQtMDAtMDAudXlkZGxzOC5tb25nb2RiLm5ldDoyNzAxNyxhYy11dXNzbmI3LXNoYXJkLTAwLTAxLnV5ZGRsczgubW9uZ29kYi5uZXQ6MjcwMTcsYWMtdXVzc25iNy1zaGFyZC0wMC0wMi51eWRkbHM4Lm1vbmdvZGIubmV0OjI3MDE3Lz9zc2w9dHJ1ZSZyZXBsaWNhU2V0PWF0bGFzLTE0NmE3Yy1zaGFyZC0wJmF1dGhTb3VyY2U9YWRtaW4mcmV0cnlXcml0ZXM9dHJ1ZSZ3PW1ham9yaXR5JmFwcE5hbWU9Q2x1c3RlcjAK
+
+frontend:
+  labelName: my-react-app
+  # replicaCount if you want to scale the application
+  replicas: 2
+  # image repository and tag and pull policy for the application
+  imageName: "anmol040/simple-react-app"
+  tag: "1.5"
+  # pullPolicy defines the image pull policy Always, Latest or IfNotPresent.
+  imagePullPolicy: "Always"
+  containerPort: 80
+
+  service:
+    name: my-react-app-service
+    type: NodePort
+    nodePort: 30000
+
+  # Overrides the image pull secret
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  # for private registry
+
+# nameOverrride and fullnameOverride for the application which will be used in the deployment
+nameOverride: "3tier-helm-demo"
+fullnameOverride: "BookstoreApp"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "adminaccount"
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# used in minikube to expose the service
+# service:
+#   type: NodePort
+#   port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# liverness and readiness probe for the application
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+# autoscaling for the application
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+# Tolerations, tainting, and affinities work together to ensure that pods run on separate nodes.
+# Node affinity is a property of pods that attracts them to a set of nodes (either as a preference or a hard requirement).
+# Taints are the opposite—they allow a node to repel a set of pods.
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,12 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-outgoing-mongodb
+spec:
+  podSelector: {} # Apply to all pods
+  policyTypes:
+    - Egress
+  egress:
+    - ports:
+        - port: 27017
+          protocol: TCP

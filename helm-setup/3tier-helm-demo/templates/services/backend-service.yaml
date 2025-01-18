@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: { { .Values.backend.service.name } }
+spec:
+  type: NodePort
+  selector:
+    app: { { .Values.backend.labelName } }
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: { { .Values.backend.containerPort } }
+      nodePort: { { .Values.backend.service.nodePort } }

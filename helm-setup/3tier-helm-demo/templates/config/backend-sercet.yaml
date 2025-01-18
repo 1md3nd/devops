@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: { { .Values.backend.secret.name } }
+type: { { .Values.backend.secret.type } }
+data:
+  mongo-url: { { .Values.backend.secret.mongo_url } }
